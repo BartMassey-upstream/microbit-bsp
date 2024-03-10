@@ -7,16 +7,14 @@ use embedded_hal::digital::OutputPin;
 
 mod brightness;
 pub mod fonts;
-// FIXME: turn on animation.
-//mod animation;
+mod animation;
 
 pub use brightness::*;
-// FIXME: turn on animation.
-//pub use animation::*;
+pub use animation::*;
 
 /// Internally, a `Frame` is a 2D array of bytes
 /// representing brightness levels.
-pub type Frame<const ROWS: usize, const COLS: usize> = [[u8; COLS]; ROWS];
+pub type Frame<const COLS: usize, const ROWS: usize> = [[u8; COLS]; ROWS];
 
 const REFRESH_INTERVAL: Duration = Duration::from_micros(500);
 
@@ -27,7 +25,7 @@ where
 {
     pin_rows: [P; ROWS],
     pin_cols: [P; COLS],
-    frame_buffer: Frame<ROWS, COLS>,
+    frame_buffer: Frame<COLS, ROWS>,
     row_p: usize,
     brightness: Brightness<BLEVELS>,
 }
@@ -68,7 +66,7 @@ where
     /// Access/modify the frame buffer.
     pub fn with_frame_buffer<F, R>(&mut self, f: F) -> R
     where
-        F: FnOnce(&mut Frame<ROWS, COLS>) -> R,
+        F: FnOnce(&mut Frame<COLS, ROWS>) -> R,
     {
         f(&mut self.frame_buffer)
     }

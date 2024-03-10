@@ -73,12 +73,15 @@ mod bitmaps {
 
 use bitmaps::*;
 
+/// Specialized [Frame] for 5×5 display.
+pub struct CharFrame(Frame<5, 5>);
+
 /// Return a frame whose bitmap is an ASCII character.
 // XXX FIXME: should panic for non-ASCII u8. As it
 // is, it will produce some weird iso-8859-1 variant
 // when the high bit is set. See the docs for the
 // `From<u8>` impl for `char`.
-pub fn ascii_frame(ascii: u8) -> Frame<5, 5> {
+pub fn ascii_frame(ascii: u8) -> CharFrame {
     char_frame(char::from(ascii))
 }
 
@@ -86,11 +89,38 @@ pub fn ascii_frame(ascii: u8) -> Frame<5, 5> {
 // XXX FIXME: currently silently turns all
 //     non-pendolino-printable characters into blanks.
 // XXX FIXME: use special characters defined above.
-pub fn char_frame(c: char) -> Frame<5, 5> {
+pub fn char_frame(c: char) -> CharFrame {
     let n = c as usize;
     if n > pendolino::PRINTABLE_START && n < pendolino::PRINTABLE_START + pendolino::PRINTABLE_COUNT {
-        frame_5x5(&pendolino::PENDOLINO3[n - pendolino::PRINTABLE_START])
+        CharFrame(frame_5x5(&pendolino::PENDOLINO3[n - pendolino::PRINTABLE_START]))
     } else {
-        frame_5x5(&[0, 0, 0, 0, 0])
+        CharFrame(frame_5x5(&[0, 0, 0, 0, 0]))
     }
+}
+
+impl CharFrame {
+    /// Return `self` as a 5×5 [Frame] in a 5×5 context, and
+    /// an error otherwise.
+    pub fn try_5x5<const XSIZE: usize, const YSIZE: usize>(self) -> Result<Frame<XSIZE, YSIZE>, FontError> {
+        if XSIZE == 5 && YSIZE == 5 {
+            // XXX This is disgusting. Hopefully the compiler will
+            // remove the gratuitous copy code.
+            let mut result = [[0; XSIZE]; YSIZE];
+            for (src, dst) in self.0.iter().zip(result.iter_mut()) {
+                for (src, dst) in src.iter().zip(dst.iter_mut()) {
+                    *dst = *src;
+                }
+            }
+            return Ok(result);
+        }
+        Err(FontError::BadDimension)
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+/// Errors produced when working with fonts.
+pub enum FontError {
+    /// Requested unavailable font dimension.
+    BadDimension,
 }
