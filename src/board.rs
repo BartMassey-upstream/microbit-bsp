@@ -10,7 +10,7 @@ pub use embassy_nrf::wdt;
 use crate::display::LedMatrix as LedMatrixDriver;
 
 /// LED matrix peripheral for the micro:bit
-pub type LedMatrix = LedMatrixDriver<Output<'static, AnyPin>, 5, 5>;
+pub type LedMatrix = LedMatrixDriver<Output<'static, AnyPin>, 5, 5, 10>;
 
 /// Button 'A'
 pub type Button = Input<'static, AnyPin>;
