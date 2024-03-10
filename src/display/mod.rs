@@ -5,8 +5,8 @@
 use embassy_time::{block_for, Duration, Instant, Timer};
 use embedded_hal::digital::OutputPin;
 
-pub mod fonts;
 mod brightness;
+pub mod fonts;
 // FIXME: turn on animation.
 //mod animation;
 
@@ -68,7 +68,7 @@ where
     /// Access/modify the frame buffer.
     pub fn with_frame_buffer<F, R>(&mut self, f: F) -> R
     where
-        F: FnOnce(&mut Frame<ROWS, COLS>) -> R
+        F: FnOnce(&mut Frame<ROWS, COLS>) -> R,
     {
         f(&mut self.frame_buffer)
     }
@@ -106,7 +106,8 @@ where
 
         // Adjust interval will impact brightness of the LEDs
         block_for(Duration::from_micros(
-            ((<Brightness<BLEVELS>>::MAX.level() - self.brightness.level()) as u64) * 6000 / <Brightness<BLEVELS>>::MAX.level() as u64,
+            ((<Brightness<BLEVELS>>::MAX.level() - self.brightness.level()) as u64) * 6000
+                / <Brightness<BLEVELS>>::MAX.level() as u64,
         ));
 
         self.pin_rows[self.row_p].set_low().ok();

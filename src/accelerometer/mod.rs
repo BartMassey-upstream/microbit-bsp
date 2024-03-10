@@ -7,8 +7,8 @@ use embassy_sync::channel::DynamicSender;
 use embassy_time::{Duration, Ticker};
 use lsm303agr::interface::I2cInterface;
 use lsm303agr::mode::MagOneShot;
-use lsm303agr::{AccelMode, Error as LsmError, Lsm303agr, Status, Acceleration};
-pub use lsm303agr::{AccelOutputDataRate};
+pub use lsm303agr::AccelOutputDataRate;
+use lsm303agr::{AccelMode, Acceleration, Error as LsmError, Lsm303agr, Status};
 
 type I2C<'d> = twim::Twim<'d, TWISPI0>;
 

@@ -1,6 +1,6 @@
 //! Simple speaker utilities for PWM-based synth
 use embassy_nrf::pwm;
-use embassy_time::{Timer, Delay};
+use embassy_time::{Delay, Timer};
 use embedded_hal::delay::DelayNs;
 
 /// Represents any pitch
@@ -156,7 +156,6 @@ impl<'a, T: pwm::Instance> PwmSpeaker<'a, T> {
     pub fn new(pwm: pwm::SimplePwm<'a, T>) -> Self {
         Self { pwm }
     }
-
 
     fn start_play(&mut self, frequency: u32) {
         self.pwm.set_prescaler(pwm::Prescaler::Div4);

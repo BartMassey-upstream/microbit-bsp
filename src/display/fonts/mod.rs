@@ -94,4 +94,3 @@ pub fn char_frame(c: char) -> Frame<5, 5> {
         frame_5x5(&[0, 0, 0, 0, 0])
     }
 }
-
