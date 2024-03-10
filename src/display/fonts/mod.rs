@@ -6,7 +6,6 @@ mod pendolino;
 mod bitmaps {
     use super::*;
 
-    #[allow(unused)]
     #[rustfmt::skip]
     /// A check-mark bitmap
     pub const CHECK_MARK: Frame<5, 5> = frame_5x5(&[
@@ -17,7 +16,6 @@ mod bitmaps {
         0b01000,
     ]);
 
-    #[allow(unused)]
     #[rustfmt::skip]
     /// A cross-mark bitmap
     pub const CROSS_MARK: Frame<5, 5> = frame_5x5(&[
@@ -28,7 +26,6 @@ mod bitmaps {
         0b00000,
     ]);
 
-    #[allow(unused)]
     #[rustfmt::skip]
     /// A left arrow bitmap
     pub const ARROW_LEFT: Frame<5, 5> = frame_5x5(&[
@@ -39,7 +36,6 @@ mod bitmaps {
         0b00100,
     ]);
 
-    #[allow(unused)]
     #[rustfmt::skip]
     /// A right arrow bitmap
     pub const ARROW_RIGHT: Frame<5, 5> = frame_5x5(&[
@@ -71,7 +67,7 @@ mod bitmaps {
     }
 }
 
-use bitmaps::*;
+pub use bitmaps::*;
 
 /// Specialized [Frame] for 5×5 display.
 pub struct CharFrame(Frame<5, 5>);

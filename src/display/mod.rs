@@ -11,6 +11,7 @@ mod animation;
 
 pub use brightness::*;
 pub use animation::*;
+pub use fonts::*;
 
 /// Internally, a `Frame` is a 2D array of bytes
 /// representing brightness levels.
