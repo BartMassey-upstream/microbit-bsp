@@ -60,7 +60,7 @@ where
 
     /// Set point (x,y) in the frame buffer to value.
     /// XXX FIXME: check ranges.
-    pub fn set(&mut self, x: usize, y: usize, level: u8) {
+    pub fn set_level(&mut self, x: usize, y: usize, level: u8) {
         self.frame_buffer[x][y] = level;
     }
 
@@ -116,7 +116,7 @@ where
 
     /// Display the current frame for the duration. Handles screen refresh
     /// in an async display loop.
-    pub async fn display(&mut self, length: Duration) {
+    pub async fn show(&mut self, length: Duration) {
         let end = Instant::now() + length;
         while Instant::now() < end {
             self.render();
@@ -127,13 +127,27 @@ where
 
     /// Display the current frame for the duration. Handles screen refresh
     /// in a blocking display loop.
-    pub fn display_blocking(&mut self, length: Duration) {
+    pub fn show_blocking(&mut self, length: Duration) {
         let end = Instant::now() + length;
         while Instant::now() < end {
             self.render();
             block_for(REFRESH_INTERVAL);
         }
         self.clear();
+    }
+
+    /// Display the given frame for the duration. Handles
+    /// screen refresh in an async display loop.
+    pub async fn display(&mut self, frame: Frame<COLS, ROWS>, length: Duration) {
+        self.with_frame_buffer(|fb| *fb = frame);
+        self.show(length).await;
+    }
+
+    /// Display the given frame for the duration. Handles
+    /// screen refresh in a blocking display loop.
+    pub fn display_blocking(&mut self, frame: Frame<COLS, ROWS>, length: Duration) {
+        self.with_frame_buffer(|fb| *fb = frame);
+        self.show_blocking(length);
     }
 
     /// Disassemble the `LedMatrix` and return the pins, as

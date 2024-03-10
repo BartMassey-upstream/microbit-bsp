@@ -148,18 +148,18 @@ impl<'a, const XSIZE: usize, const YSIZE: usize> Animation<'a, XSIZE, YSIZE> {
         };
         for row in frame {
             if shift_left {
-                for cid in 0..XSIZE - shift as usize {
+                for cid in 0..XSIZE - shift {
                     row[cid] = row[cid + shift];
                 }
-                for cid in XSIZE - shift..XSIZE {
-                    row[cid] = 0;
+                for cell in &mut row[XSIZE - shift..XSIZE] {
+                    *cell = 0;
                 }
             } else {
                 for cid in XSIZE - shift..XSIZE {
                     row[cid] = row[cid - shift];
                 }
-                for cid in 0..XSIZE - shift {
-                    row[cid] = 0;
+                for cell in &mut row[0..XSIZE - shift] {
+                    *cell = 0;
                 }
             }
         }
