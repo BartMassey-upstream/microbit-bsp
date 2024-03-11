@@ -137,30 +137,21 @@ impl<'a, const XSIZE: usize, const YSIZE: usize> Animation<'a, XSIZE, YSIZE> {
     }
 
     fn shift(frame: &mut Frame<XSIZE, YSIZE>, shift: isize) {
-        if shift == 0 {
-            return;
-        }
-        let (shift_left, shift) = if shift < 0 {
-            (true, -shift as usize)
-        } else {
-            assert!(shift > 0);
-            (false, shift as usize)
-        };
-        for row in frame {
-            if shift_left {
-                for cid in 0..XSIZE - shift {
-                    row[cid] = row[cid + shift];
-                }
-                for cell in &mut row[XSIZE - shift..XSIZE] {
-                    *cell = 0;
-                }
-            } else {
-                for cid in XSIZE - shift..XSIZE {
-                    row[cid] = row[cid - shift];
-                }
-                for cell in &mut row[0..XSIZE - shift] {
-                    *cell = 0;
-                }
+        if shift.unsigned_abs() >= XSIZE {
+            for row in frame {
+                row.fill(0);
+            }
+        } else if shift < 0 {
+            let split_point = (-shift) as usize;
+            for row in frame {
+                row.copy_within(split_point.., 0);
+                row[XSIZE - split_point..].fill(0);
+            }
+        } else if shift > 0 {
+            let split_point = shift as usize;
+            for row in frame {
+                row.copy_within(..XSIZE - split_point, split_point);
+                row[..split_point].fill(0);
             }
         }
     }
